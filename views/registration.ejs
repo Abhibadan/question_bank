@@ -1,0 +1,91 @@
+<%- include('layout/header.ejs') %>
+<div class="form-container">
+    <ul class="nav nav-tabs justify-content-center mb-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">Login</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab" aria-controls="register" aria-selected="false">Register</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <!-- Login Form -->
+        <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+            <form id="login-form">
+                <div class="mb-3">
+                    <label for="login-email" class="form-label">Email address</label>
+                    <input type="email" name="email" class="form-control" id="login-email" placeholder="Enter your email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="login-password" class="form-label">Password</label>
+                    <input type="password"  name="password" class="form-control" id="login-password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </form>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+            <form id="register-form">
+                <div class="mb-3">
+                    <label for="register-name" class="form-label">Full Name</label>
+                    <input type="text" name="userName" class="form-control" id="register-name" placeholder="Enter your full name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="register-email" class="form-label">Email address</label>
+                    <input type="email" name="email" class="form-control" id="register-email" placeholder="Enter your email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="register-password" class="form-label">Password</label>
+                    <input type="password"  name="password" class="form-control" id="register-password" placeholder="Create a password" required>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Register</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('layout/footer.ejs') %>
+
+<script>
+    // Handle login form submission
+    document.getElementById('login-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+        
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        
+        axios.post('/registration/login', { email, password })
+            .then(response => {
+                // Handle success, you can redirect or show a message
+                console.log('Login successful:', response);
+            })
+            .catch(error => {
+                // Handle error
+                console.error('Login failed:', error);
+            });
+    });
+
+    // Handle registration form submission
+    document.getElementById('register-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+        
+        const userName = document.getElementById('register-name').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        
+        axios.post('/registration/register', { userName, email, password })
+            .then(response => {
+                // Handle success, you can redirect or show a message
+                console.log('Registration successful:', response);
+            })
+            .catch(error => {
+                // Handle error
+                console.error('Registration failed:', error);
+            });
+    });
+</script>
+
+
+</body>
+</html>
