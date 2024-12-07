@@ -15,6 +15,32 @@ editButton.addEventListener('click', () => {
     saveButton.style.display = 'inline-block';
 });
 
+// Get profile details on first load
+async function getProfileDetails(){
+    const token = localStorage.getItem('token');
+    if(!token){
+        localStorage.clear();
+        return window.location.replace('/');
+    };
+    try{
+        const response = await axios.get('/auth',{
+            headers: {
+                'Authorization': 'Bearer '+token
+            }
+        });
+        const {name,email,profilePicture}=response.data.data;
+        
+        nameField.value=name;
+        profileEmail.value=email;
+        profilePic.src=profilePicture==""?"/uploads/profilePicture/default_profile.jpeg":profilePicture;
+    }catch(err){
+        api_error_handle(err);
+    }
+}
+
+getProfileDetails();
+
+
 // Handle form submission
 document.getElementById('profile-form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -86,27 +112,7 @@ fileInput.addEventListener('change', (e) => {
 });
 
 
-// Get profile details on first load
-async function getProfileDetails(){
-    const token = localStorage.getItem('token');
-    if(!token){
-        localStorage.clear();
-        return window.location.replace('/');
-    };
-    try{
-        const response = await axios.get('/auth',{
-            headers: {
-                'Authorization': 'Bearer '+token
-            }
-        });
-        const {name,email,profilePicture}=response.data.data;
-        
-        nameField.value=name;
-        profileEmail.value=email;
-        profilePic.src=profilePicture==""?"/uploads/profilePicture/default_profile.jpeg":profilePicture;
-    }catch(err){
-        api_error_handle(err);
-    }
+function logout(){
+    localStorage.clear();
+    window.location.replace('/');
 }
-
-getProfileDetails();

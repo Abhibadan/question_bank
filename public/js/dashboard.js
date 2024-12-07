@@ -5,12 +5,48 @@ const questions = [
     { id: 3, text: 'Who discovered gravity?', categories: [] },
 ];
 
-const categories = ['Science', 'Math', 'History', 'Geography'];
+const categories = [];
+(async ()=>{
+    try{
+        const { data } = await axios.get('/category',{
+            headers: {
+                'Authorization': 'Bearer '+localStorage.getItem('token')
+            }
+        })
+         
+        return data
+    }catch(e){
+        // api_error_handle(e);
+        console.log(e);
+        return [];
+    }
+})().then(res=>{
+    categories.push(...res.data);
+    // Access the dropdown menu by ID
+    const dropdownMenu = document.getElementById('categoryDropdownMenu');
+    dropdownMenu.innerHTML = ''; // Clear existing items (optional, if you want to refresh every time)
 
+    // Add the default "All CategoriesArray.isArray" option
+    let allCategoriesOption = document.createElement('li');
+    allCategoriesOption.innerHTML = `<a class="dropdown-item" href="#">All Categories</a>`;
+    dropdownMenu.appendChild(allCategoriesOption);
+    allCategoriesOption = document.createElement('li');
+    allCategoriesOption.innerHTML = `<a class="dropdown-item" href="#">Unassigned Categories</a>`;
+    dropdownMenu.appendChild(allCategoriesOption);
+    // Add each category from the API response
+    res.data.forEach(category => {
+        const categoryItem = document.createElement('li');
+        categoryItem.innerHTML = `<a class="dropdown-item" href="#">${category.name}</a>`; // Assuming category has a "name" property
+        dropdownMenu.appendChild(categoryItem);
+    });
+});
 // Elements
 const questionsList = document.getElementById('questions-list');
 const searchInput = document.getElementById('search-input');
 const categoryFilter = document.getElementById('category-filter');
+
+const newCategoryName = document.getElementById('category-name');
+const csvInput= document.getElementById('csv-file');
 
 // Render questions
 function renderQuestions(filteredQuestions) {
@@ -92,3 +128,49 @@ categoryFilter.addEventListener('change', () => renderQuestions(filterQuestions(
 
 // Initial render
 renderQuestions(questions);
+
+
+function addCategory(e){
+    e.preventDefault();
+    if(newCategoryName.value===''){
+        alert("Please enter category name");
+        return;
+    }
+    axios.post('/category',{name:newCategoryName.value},{
+        headers: {
+            'Authorization': 'Bearer '+localStorage.getItem('token')
+        }
+    }).then(res=>{
+        alert(res.data.message);
+        window.location.reload();
+    }).catch(err=>{
+        console.log(err);
+        api_error_handle(err);
+    })
+}
+
+function uploadQuestion(e){
+    e.preventDefault();
+
+    const file = csvInput.files[0];
+    if(!file){
+        alert("Please select a CSV file");
+        return;
+    }
+    const formData = new FormData();
+    formData.append('questions', file);
+
+    axios.post('/question',formData,{
+        headers: {
+            'Authorization': 'Bearer '+localStorage.getItem('token'),
+            'Content-Type':'multipart/form-data'
+        }
+    })
+   .then(res => {
+        alert(res.data.message);
+        window.location.reload();
+   }).catch(err=>{
+    console.log(err);
+    api_error_handle(err);
+   })
+}

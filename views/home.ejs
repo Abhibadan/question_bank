@@ -1,95 +1,117 @@
 <%- include('layout/header.ejs') %>
     <title>Question Bank</title>
     <link rel="stylesheet" href="/css/dashboard.css">
-</head>
-<body>
-    <div class="dashboard-container mt-5">
-        <div class="header-buttons">
-            <h3 class="text-center">Dashboard</h3>
-            <a href="/profile" class="btn btn-outline-primary"><i class="fa-regular fa-user"></i></a>
-        </div>
+    </head>
 
-        <!-- Filter and Search -->
-        <div class="filter-container">
-            <input type="text" id="search-input" class="form-control" placeholder="Search questions...">
-            <select id="category-filter" class="form-select">
-                <option value="">All Categories</option>
-                <option value="science">Science</option>
-                <option value="math">Math</option>
-                <option value="history">History</option>
-            </select>
-        </div>
+    <body>
+        <div class="dashboard-container mt-5">
+            <div class="header-buttons">
+                <h3 class="text-center">Dashboard</h3>
+                <a href="/profile" class="btn btn-outline-primary"><i class="fa-regular fa-user"></i></a>
+            </div>
 
-        <!-- Questions List -->
-        <ul class="list-group mb-4" id="questions-list">
-            <!-- Dynamic questions will be rendered here -->
-        </ul>
+            <!-- Filter and Search -->
+            <div class="filter-container">
+                <input type="text" id="search-input" class="form-control" placeholder="Search questions...">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="category-filter"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Select Category
+                </button> <span id="selected-category"> Selected category name</span>
+                <ul class="dropdown-menu" aria-labelledby="category-filter" id="categoryDropdownMenu">
+                    <li><a class="dropdown-item" href="#">All Categories</a></li>
+                    <li><a class="dropdown-item" href="#">Unassigned Category</a></li>
+                    <li><a class="dropdown-item" href="#">All Categories</a></li>
+                    <li><a class="dropdown-item" href="#">Unassigned Category</a></li>
+                    <li><a class="dropdown-item" href="#">All Categories</a></li>
+                    <li><a class="dropdown-item" href="#">Unassigned Category</a></li>
+                    <li><a class="dropdown-item" href="#">All Categories</a></li>
+                    <li><a class="dropdown-item" href="#">Unassigned Category</a></li>
+                    <li><a class="dropdown-item" href="#">All Categories</a></li>
+                    <li><a class="dropdown-item" href="#">Unassigned Category</a></li>
+                    <li><a class="dropdown-item" href="#">All Categories</a></li>
+                    <li><a class="dropdown-item" href="#">Unassigned Category</a></li>
+                    <li><a class="dropdown-item" href="#">All Categories</a></li>
+                    <li><a class="dropdown-item" href="#">Unassigned Category</a></li>
+                </ul>
 
-        <!-- Pagination -->
-        <nav>
-            <ul class="pagination">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">Previous</a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
+            </div>
+
+            <!-- Questions List -->
+            <ul class="list-group mb-4" id="questions-list">
+                <!-- Dynamic questions will be rendered here -->
             </ul>
-        </nav>
 
-        <!-- Add New Category -->
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add New Category</button>
+            <!-- Pagination -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
 
-        <!-- Upload CSV -->
-        <button class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#uploadCSVModal">Upload Questions (CSV)</button>
+            <!-- Add New Category -->
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add New
+                Category</button>
 
-        <!-- Add Category Modal -->
-        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <!-- Upload CSV -->
+            <button class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#uploadCSVModal">Upload
+                Questions (CSV)</button>
+
+            <!-- Add Category Modal -->
+            <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="add-category-form">
+                                <div class="mb-3">
+                                    <label for="category-name" class="form-label">Category Name</label>
+                                    <input type="text" class="form-control" id="category-name"
+                                        placeholder="Enter category name" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary" onclick="addCategory(event)">Add Category</button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <form id="add-category-form">
-                            <div class="mb-3">
-                                <label for="category-name" class="form-label">Category Name</label>
-                                <input type="text" class="form-control" id="category-name" placeholder="Enter category name" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Category</button>
-                        </form>
+                </div>
+            </div>
+
+            <!-- Upload CSV Modal -->
+            <div class="modal fade" id="uploadCSVModal" tabindex="-1" aria-labelledby="uploadCSVModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="uploadCSVModalLabel">Upload Questions (CSV)</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="upload-csv-form" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="csv-file" class="form-label">Select CSV File</label>
+                                    <input type="file" class="form-control" id="csv-file" accept=".csv" required>
+                                </div>
+                                <button type="submit" class="btn btn-secondary" onclick="uploadQuestion(event)">Upload</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Upload CSV Modal -->
-        <div class="modal fade" id="uploadCSVModal" tabindex="-1" aria-labelledby="uploadCSVModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="uploadCSVModalLabel">Upload Questions (CSV)</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="upload-csv-form" enctype="multipart/form-data">
-                            <div class="mb-3">
-                                <label for="csv-file" class="form-label">Select CSV File</label>
-                                <input type="file" class="form-control" id="csv-file" accept=".csv" required>
-                            </div>
-                            <button type="submit" class="btn btn-secondary">Upload</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        <%- include('layout/footer.ejs') %>
+            <script src="/js/dashboard.js"></script>
+    </body>
 
-    <%- include('layout/footer.ejs') %>
-    <script src="/js/dashboard.js"></script>
-</body>
-</html>
+    </html>

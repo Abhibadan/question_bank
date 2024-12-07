@@ -4,7 +4,11 @@
 </head>
 <body>
     <div class="profile-container">
-        <button class="btn btn-outline-secondary mb-3" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-outline-secondary mb-3" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+            <button class="btn btn-outline-secondary mb-3" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+        
         <h3 class="text-center">Profile</h3>
         <div class="text-center my-3">
             <img id="profile-pic" src="/images/default-profile.png" alt="Profile Picture" class="profile-pic mb-2">

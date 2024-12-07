@@ -1,4 +1,4 @@
-const Category = require("../models/Category");
+const Category = require("../models/category.model");
 
 const getCategories = async(req,res)=>{
     const categories=await Category.find({});
@@ -10,12 +10,23 @@ const getCategories = async(req,res)=>{
 
 const createCategory=async(req,res)=>{
     const {name}=req.body;
-    const category=new Category({name});
-    await category.save();
-    return res.status(201).json({
-        message:"Category created successfully",
-        data:category
-    })
+    try{
+        if (await Category.findOne({ name: { $regex: new RegExp(name), $options: 'i' } })) {
+            return res.status(409).json({ "message": "Category already exists" });
+        }
+        const category=new Category({name});
+        await category.save();
+        return res.status(201).json({
+            message:"Category created successfully",
+            data:category
+        })
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({
+            message:"Something went wrong",
+        })
+    }
+    
 }
 
 module.exports={
