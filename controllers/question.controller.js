@@ -104,15 +104,15 @@ const storeQuestion = (req, res) => {
             const cleanCategory= ![undefined,null].includes(row.Category)?row.Category.trim():"";
 
             if(cleanQuestion!="" && cleanCategory!=""){
-                console.log(cleanQuestion,cleanCategory);
+                // console.log(cleanQuestion,cleanCategory);
                 try {
                     const category = await Category.findOne({ name: { $regex: new RegExp(cleanCategory), $options: 'i' } });
-                    console.log(category);
+                    // console.log(category);
                     if (category) {
                         const result=await Question.updateOne({ question: cleanQuestion},{
                             $addToSet: { categories: category._id },
                         },{upsert: true});
-                        console.log(result);
+                        // console.log(result);
                     }
                 } catch (error) {
                     console.error(error.message);
