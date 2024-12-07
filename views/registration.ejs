@@ -1,4 +1,8 @@
 <%- include('layout/header.ejs') %>
+<title>Login Question Bank</title>
+<link rel="stylesheet" href="/css/login.css" type="text/css"/>
+</head>
+<body>
 <div class="form-container">
     <!-- REGISTRATION FROM IS COMMENTED FOR NOT NEEDED FOR NOW -->
     <!-- <ul class="nav nav-tabs justify-content-center mb-4" id="myTab" role="tablist">
@@ -48,44 +52,7 @@
 
 <%- include('layout/footer.ejs') %>
 
-<script>
-    // Handle login form submission
-    document.getElementById('login-form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
-        
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        
-        axios.post('/registration/login', { email, password })
-            .then(response => {
-                // Handle success, you can redirect or show a message
-                console.log('Login successful:', response);
-            })
-            .catch(error => {
-                // Handle error
-                console.error('Login failed:', error);
-            });
-    });
-
-    // Handle registration form submission
-    // document.getElementById('register-form').addEventListener('submit', function(event) {
-    //     event.preventDefault(); // Prevent default form submission
-        
-    //     const userName = document.getElementById('register-name').value;
-    //     const email = document.getElementById('register-email').value;
-    //     const password = document.getElementById('register-password').value;
-        
-    //     axios.post('/registration/register', { userName, email, password })
-    //         .then(response => {
-    //             // Handle success, you can redirect or show a message
-    //             console.log('Registration successful:', response);
-    //         })
-    //         .catch(error => {
-    //             // Handle error
-    //             console.error('Registration failed:', error);
-    //         });
-    // });
-</script>
+<script src="/js/login.js"></script>
 
 
 </body>

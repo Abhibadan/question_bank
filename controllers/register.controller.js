@@ -10,6 +10,7 @@ const register=async (req,res)=>{
             const user=await User.create({
                 name,
                 email,
+                profilePicture:"",
                 password:await UserAuth.hashPassword(password)
             })
             const token=UserAuth.generateToken(user._id);

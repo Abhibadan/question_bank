@@ -15,6 +15,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/',registrationRoutes);
+app.get('/dashboard',(req,res)=>{
+    return res.render("home")
+})
+app.get('/profile',(req,res)=>{
+    return res.render("profile")
+})
 app.use('/auth',UserAuth.authenticate,userRoutes);
 
 const PORT=process.env.PORT || 3000;

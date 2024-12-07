@@ -27,8 +27,9 @@ const editProfile=async (req,res)=>{
 }
 const editProfilePicture = async (req, res) => {
     const user = req.user;
+
     try {
-        console.log(req.file.path);
+        // console.log(req.file.path);
         user.profilePicture = req.file.path.replace(/^public/, '');
         await user.save();
         return res.status(200).json({ message: "Profile picture updated successfully" });
