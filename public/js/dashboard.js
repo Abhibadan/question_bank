@@ -1,11 +1,14 @@
 // Sample questions data
-const questions = [
-    { id: 1, text: 'What is the capital of France?', categories: [] },
-    { id: 2, text: 'What is 2 + 2?', categories: [] },
-    { id: 3, text: 'Who discovered gravity?', categories: [] },
-];
 
-const categories = [];
+const questionsList = document.getElementById('questions-list');
+const searchInput = document.getElementById('search-input');
+const categoryFilter = document.getElementById('category-filter');
+const newCategoryName = document.getElementById('category-name');
+const csvInput= document.getElementById('csv-file');
+let page=1,search="",category="";
+let questions = [];
+
+let categories = [];
 (async ()=>{
     try{
         const { data } = await axios.get('/category',{
@@ -13,59 +16,85 @@ const categories = [];
                 'Authorization': 'Bearer '+localStorage.getItem('token')
             }
         })
-         
         return data
     }catch(e){
-        // api_error_handle(e);
+        api_error_handle(e);
         console.log(e);
         return [];
     }
 })().then(res=>{
     categories.push(...res.data);
-    // Access the dropdown menu by ID
-    const dropdownMenu = document.getElementById('categoryDropdownMenu');
-    dropdownMenu.innerHTML = ''; // Clear existing items (optional, if you want to refresh every time)
+    renderDropdownMenu();
+    getQuestion();
+});
 
-    // Add the default "All CategoriesArray.isArray" option
+function getQuestion() {
+    axios.get('/question',{
+        params: {
+            page,
+            search,
+            category
+        },
+        headers: {
+            'Authorization': 'Bearer '+localStorage.getItem('token')
+        }
+    }).then(res=>{
+        renderQuestions(res.data.data.questions);
+        page = Number(res.data.data.currentPage);
+        renderPagination(res.data.data.totalPages);
+    }).catch(err=>{
+        if(err.response.status ===404){
+            renderQuestions([])
+            page=1
+            renderPagination(1);
+        }else{
+            api_error_handle(err);
+            console.log(err);
+            renderQuestions([]);
+            page=1
+            renderPagination(1);
+        }
+    })
+}
+function renderDropdownMenu(){
+    const dropdownMenu = document.getElementById('categoryDropdownMenu');
+    dropdownMenu.innerHTML = ''; 
     let allCategoriesOption = document.createElement('li');
-    allCategoriesOption.innerHTML = `<a class="dropdown-item" href="#">All Categories</a>`;
+    allCategoriesOption.innerHTML = `<a class="dropdown-item" href="#" onclick='chooseCategory("","All Categories")'>All Categories</a>`;
     dropdownMenu.appendChild(allCategoriesOption);
     allCategoriesOption = document.createElement('li');
-    allCategoriesOption.innerHTML = `<a class="dropdown-item" href="#">Unassigned Categories</a>`;
+    allCategoriesOption.innerHTML = `<a class="dropdown-item" href="#" onclick='chooseCategory("unassigned","Unassigned Categories")'>Unassigned Categories</a>`;
     dropdownMenu.appendChild(allCategoriesOption);
-    // Add each category from the API response
-    res.data.forEach(category => {
+    categories.forEach(category => {
         const categoryItem = document.createElement('li');
-        categoryItem.innerHTML = `<a class="dropdown-item" href="#">${category.name}</a>`; // Assuming category has a "name" property
+        categoryItem.innerHTML = `<a class="dropdown-item" href="#" onclick='chooseCategory("${category._id}","${category.name}")'>${category.name}</a>`; // Assuming category has a "name" property
         dropdownMenu.appendChild(categoryItem);
     });
-});
-// Elements
-const questionsList = document.getElementById('questions-list');
-const searchInput = document.getElementById('search-input');
-const categoryFilter = document.getElementById('category-filter');
-
-const newCategoryName = document.getElementById('category-name');
-const csvInput= document.getElementById('csv-file');
-
+}
 // Render questions
 function renderQuestions(filteredQuestions) {
     questionsList.innerHTML = '';
+    if (filteredQuestions.length===0){
+        const noQuestions = document.createElement('p');
+        noQuestions.innerText = 'No questions found';
+        questionsList.appendChild(noQuestions);
+        return;
+    }
     filteredQuestions.forEach(question => {
         const li = document.createElement('li');
         li.className = 'list-group-item d-flex justify-content-between align-items-center';
         
         // Question text
         const questionText = document.createElement('span');
-        questionText.innerHTML = `${question.text}`;
+        questionText.innerHTML = `${question.question}`;
         li.appendChild(questionText);
 
         // Categories badges
         const badges = document.createElement('div');
-        question.categories.forEach(cat => {
+        question.categoryDetails.forEach(cat => {
             const badge = document.createElement('span');
             badge.className = 'badge bg-primary';
-            badge.innerText = cat;
+            badge.innerText = cat.name;
             badges.appendChild(badge);
         });
         li.appendChild(badges);
@@ -83,8 +112,8 @@ function renderQuestions(filteredQuestions) {
             const link = document.createElement('a');
             link.className = 'dropdown-item';
             link.href = '#';
-            link.innerText = cat;
-            link.onclick = () => assignCategory(question.id, cat);
+            link.innerText = cat.name;
+            link.onclick = () => assignCategory(question._id, cat._id);
             dropdownItem.appendChild(link);
             dropdownMenu.appendChild(dropdownItem);
         });
@@ -97,15 +126,24 @@ function renderQuestions(filteredQuestions) {
 
         questionsList.appendChild(li);
     });
+
 }
 
 // Assign category
-function assignCategory(questionId, category) {
-    const question = questions.find(q => q.id === questionId);
-    if (!question.categories.includes(category)) {
-        question.categories.push(category);
+function assignCategory(questionId, categoryId) {
+   axios.put(`/question/${questionId}`,{
+    category_id:categoryId
+   },{
+    headers: {
+        'Authorization': 'Bearer '+localStorage.getItem('token')
     }
-    renderQuestions(filterQuestions());
+   }).then((response) => {
+    alert(response.data.message);
+    getQuestion();
+   }).catch((error) => {
+    console.log(error);
+    // api_error_handle(error);
+   });
 }
 
 // Filter and search functionality
@@ -122,12 +160,23 @@ function filterQuestions() {
     });
 }
 
+const debouncer = ()=>{
+    let debounceTimer=null;
+    return ()=>{
+        clearTimeout(debounceTimer);
+        debounceTimer=setTimeout(()=>{
+            page=1
+            getQuestion();
+        },500);
+    }
+}
+const debounceSearch=debouncer();
 // Event listeners
-searchInput.addEventListener('input', () => renderQuestions(filterQuestions()));
-categoryFilter.addEventListener('change', () => renderQuestions(filterQuestions()));
+searchInput.addEventListener('input', (e) => {
+    search=e.target.value;
+    debounceSearch();
+});
 
-// Initial render
-renderQuestions(questions);
 
 
 function addCategory(e){
@@ -173,4 +222,52 @@ function uploadQuestion(e){
     console.log(err);
     api_error_handle(err);
    })
+}
+
+function renderPagination(totalpage){
+    const pagination = document.getElementById('questions-page');
+    pagination.innerHTML = '';
+    if(totalpage>1){
+        if(page==1){
+            pagination.innerHTML += `<li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>`;
+        }else{
+            pagination.innerHTML += `<li class="page-item">
+                        <a class="page-link" href="#" onclick="changePage('decrease')">Previous</a>
+                    </li>`;
+        }
+        pagination.innerHTML+=  `<li class="page-item active"><a class="page-link" href="#">${page}</a></li>`
+
+        if(page==totalpage){
+            pagination.innerHTML += `<li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Next</a>
+                    </li>`;
+        }else{
+            pagination.innerHTML += `<li class="page-item">
+                        <a class="page-link" href="#" onclick="changePage('increase')">Next</a>
+                    </li>`;
+        }
+    }
+
+}
+
+function changePage(direction){
+    switch(direction){
+        case 'increase':
+            page++;
+            getQuestion();
+            break;
+        case 'decrease':
+            page--;
+            getQuestion();
+            break;
+    }
+}
+
+function chooseCategory(category_id,category_name){
+    category = category_id;
+    document.getElementById('selected-category').innerText=category_name;
+    page=1;
+    getQuestion();
 }
