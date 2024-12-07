@@ -1,7 +1,7 @@
 const Category = require("../models/category.model");
 
 const getCategories = async(req,res)=>{
-    const categories=await Category.find({});
+    const categories=await Category.find({}).collation({ locale: 'en', strength: 2 }).sort({ name: 1 });
     return res.status(200).json({
         message:"Categories fetched successfully",
         data:categories

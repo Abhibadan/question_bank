@@ -9,7 +9,7 @@ const Category = require('../models/category.model');
 
 const getQuestions = async(req,res)=>{
     const page=Number(req.query.page) ||1;
-    const limit=3;
+    const limit=5;
     const skip=(page-1)*limit;
     const search=req.query.search||"";
     const category=req.query.category||"";
@@ -46,23 +46,30 @@ const getQuestions = async(req,res)=>{
         });
     }
 
-    pipeline.push({
-        $facet: {
-            totalCount: [
-                { $count: "count" }, 
-            ],
-            data: [
-                { $skip: skip }, 
-                { $limit: limit }, 
-                {
-                    $project: {
-                        question: 1,
-                        categoryDetails: 1, 
-                    },
-                },
-            ],
+    pipeline.push(
+        {
+            $sort: {
+                '_id': -1
+            }
         },
-    })
+        {
+            $facet: {
+                totalCount: [
+                    { $count: "count" },
+                ],
+                data: [
+                    { $skip: skip },
+                    { $limit: limit },
+                    {
+                        $project: {
+                            question: 1,
+                            categoryDetails: 1,
+                        },
+                    },
+                ],
+            },
+        }
+    )
     const questions = await Question.aggregate(pipeline);
     const{totalCount,data}=questions[0];
     if(totalCount.length===0){
@@ -100,7 +107,7 @@ const storeQuestion = (req, res) => {
                 console.log(cleanQuestion,cleanCategory);
                 try {
                     const category = await Category.findOne({ name: { $regex: new RegExp(cleanCategory), $options: 'i' } });
-                    // console.log(category);
+                    console.log(category);
                     if (category) {
                         const result=await Question.updateOne({ question: cleanQuestion},{
                             $addToSet: { categories: category._id },
