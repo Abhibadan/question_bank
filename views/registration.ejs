@@ -1,13 +1,14 @@
 <%- include('layout/header.ejs') %>
 <div class="form-container">
-    <ul class="nav nav-tabs justify-content-center mb-4" id="myTab" role="tablist">
+    <!-- REGISTRATION FROM IS COMMENTED FOR NOT NEEDED FOR NOW -->
+    <!-- <ul class="nav nav-tabs justify-content-center mb-4" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">Login</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab" aria-controls="register" aria-selected="false">Register</button>
         </li>
-    </ul>
+    </ul> -->
     <div class="tab-content" id="myTabContent">
         <!-- Login Form -->
         <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
@@ -25,7 +26,7 @@
         </div>
 
         <!-- Registration Form -->
-        <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+        <!-- <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
             <form id="register-form">
                 <div class="mb-3">
                     <label for="register-name" class="form-label">Full Name</label>
@@ -41,7 +42,7 @@
                 </div>
                 <button type="submit" class="btn btn-success w-100">Register</button>
             </form>
-        </div>
+        </div> -->
     </div>
 </div>
 
@@ -67,23 +68,23 @@
     });
 
     // Handle registration form submission
-    document.getElementById('register-form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
+    // document.getElementById('register-form').addEventListener('submit', function(event) {
+    //     event.preventDefault(); // Prevent default form submission
         
-        const userName = document.getElementById('register-name').value;
-        const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
+    //     const userName = document.getElementById('register-name').value;
+    //     const email = document.getElementById('register-email').value;
+    //     const password = document.getElementById('register-password').value;
         
-        axios.post('/registration/register', { userName, email, password })
-            .then(response => {
-                // Handle success, you can redirect or show a message
-                console.log('Registration successful:', response);
-            })
-            .catch(error => {
-                // Handle error
-                console.error('Registration failed:', error);
-            });
-    });
+    //     axios.post('/registration/register', { userName, email, password })
+    //         .then(response => {
+    //             // Handle success, you can redirect or show a message
+    //             console.log('Registration successful:', response);
+    //         })
+    //         .catch(error => {
+    //             // Handle error
+    //             console.error('Registration failed:', error);
+    //         });
+    // });
 </script>
 
 
