@@ -1,7 +1,7 @@
 const Router=require('express').Router();
 
 const {register,login}=require('../controllers/register.controller')
-const userValidations = require('../validation/registration.validation');
+const userValidations = require('../validation/user.validation');
 const validatePipeline = require('../middlewears/validateRequest.middlewear');
 
 Router.get('/',(req,res)=>{

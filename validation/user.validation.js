@@ -29,7 +29,7 @@ const userValidations = {
             .withMessage('Password must be at least 6 characters long'),
     ],
     editProfile: [
-        body('username')
+        body('name')
             .optional()
             .isString()
             .withMessage('Username must be a string'),
@@ -37,10 +37,14 @@ const userValidations = {
             .optional()
             .isLength({ min: 6 })
             .withMessage('Password must be at least 6 characters long'),
-        body('profilePicture')
-            .optional()
-            .isString()
-            .withMessage('Profile picture must be a valid URL'),
+        body('confirmPassword')
+            .custom((value, { req }) => {
+                if (req.body.password && value !== req.body.password) {
+                    throw new Error('Confirm password must match the password');
+                }
+                return true;
+            })
+            .withMessage('Confirm password must match the password'),
     ],
 };
 
