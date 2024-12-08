@@ -1,3 +1,4 @@
+# Here is an example env provided
 MONGO_CONNECTION=mongodb+srv://connectUser:Ae30xXFENtg91dOL@abhibadanghosh.igcasvl.mongodb.net/question_bank?retryWrites=true&w=majority&appName=AbhibadanGhosh
-JWT_SECRET=secret
+JWT_SECRET=JDJhJDEyJGhDSU5OVkFnQW1PVzJ5OEFqYkg3Z3VBaHcwd3pMbVVsampRSjlrNjkwZ1duQW1zME5PeVhx
 PORT=5001

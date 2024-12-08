@@ -13,7 +13,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine",'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
- const Router = express.Router();
+
+const Router = express.Router();
 
 app.use('/',registrationRoutes);
 app.get('/dashboard',(req,res)=>{
@@ -29,7 +30,7 @@ Router.use('/question',questionRoutes);
 // Applying middleware to protect routes with JWT token authentication
 app.use('/',UserAuth.authenticate,Router)
 
-const PORT=process.env.PORT || 3000;
+const PORT=process.env.PORT || 5000;
 app.listen(PORT,()=>{
     console.log("Serever is listening at",PORT);
 })

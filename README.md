@@ -37,6 +37,9 @@ The project uses the following dependencies:
 - **nodemon**: For automatically restarting the server during development.
 - **streamifier**: To convert buffers to streams.
 
+## Default Credential
+- **email**: admin@email.com
+- **password**: Qwer@1234
 
 ## Getting Started
 
