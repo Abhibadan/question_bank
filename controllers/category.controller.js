@@ -1,5 +1,12 @@
 const Category = require("../models/category.model");
 
+
+/**
+ * Fetches all categories from the database and returns them in the response.
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @returns {Promise<Object>} - A JSON object containing the fetched categories.
+ */
 const getCategories = async(req,res)=>{
     const categories=await Category.find({}).collation({ locale: 'en', strength: 2 }).sort({ name: 1 });
     return res.status(200).json({
@@ -8,6 +15,14 @@ const getCategories = async(req,res)=>{
     })
 }
 
+
+/**
+ * Creates a new category in the database.
+ * @param {Object} req - The HTTP request object containing the category name in the request body.
+ * @param {string} req.body.name - The name of the category to be created.
+ * @param {Object} res - The HTTP response object to return the created category or an error message.
+ * @returns {Promise<Object>} - A JSON object containing the created category or an error message.
+ */
 const createCategory=async(req,res)=>{
     const {name}=req.body;
     try{

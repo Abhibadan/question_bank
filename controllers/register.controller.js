@@ -1,5 +1,17 @@
 const UserAuth =require('../helpers/UserAuth')
 const User = require('../models/user.model')
+
+/**
+ * Registers a new user in the system.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} req.body - The request body containing the user's information.
+ * @param {string} req.body.name - The user's name.
+ * @param {string} req.body.email - The user's email address.
+ * @param {string} req.body.password - The user's password.
+ * @param {Object} res - The HTTP response object.
+ * @returns {Promise<Object>} - A JSON response containing the user's token, a success message, and a success flag.
+ */
 const register=async (req,res)=>{
     const {name,email,password}=req.body;
     const user= await User.findOne({'email':email});
@@ -23,6 +35,16 @@ const register=async (req,res)=>{
     
 }
 
+/**
+ * Logs in a user to the system.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} req.body - The request body containing the user's login credentials.
+ * @param {string} req.body.email - The user's email address.
+ * @param {string} req.body.password - The user's password.
+ * @param {Object} res - The HTTP response object.
+ * @returns {Promise<Object>} - A JSON response containing the user's token, a success message, and a success flag.
+ */
 const login=async(req,res)=>{
     const {email,password}=req.body;
     const user= await User.findOne({'email':email});

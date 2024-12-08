@@ -7,6 +7,16 @@ const Category = require('../models/category.model');
 
 
 
+/**
+ * Retrieves a paginated list of questions based on the provided search and category filters.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {number} req.query.page - The page number for pagination.
+ * @param {string} req.query.search - The search term to filter questions by.
+ * @param {string} req.query.category - The category ID to filter questions by.
+ * @param {Object} res - The HTTP response object.
+ * @returns {Promise<Object>} - An object containing the paginated list of questions and related metadata.
+ */
 const getQuestions = async(req,res)=>{
     const page=Number(req.query.page) ||1;
     const limit=5;
@@ -89,6 +99,19 @@ const getQuestions = async(req,res)=>{
 }
 
 
+/**
+ * Stores questions from a CSV file uploaded by the user.
+ * 
+ * This function is responsible for processing a CSV file containing questions and categories,
+ * and storing the unique questions in the database, associating them with the appropriate
+ * categories.
+ * 
+ * CSV file mast have two columns: "Question" and "Category".
+ * 
+ * @param {Object} req - The HTTP request object, containing the uploaded CSV file.
+ * @param {Object} res - The HTTP response object, used to send the response back to the client.
+ * @returns {Promise<void>} - A Promise that resolves when the processing is complete.
+ */
 const storeQuestion = (req, res) => {
     const file = req.file;
     
@@ -127,6 +150,17 @@ const storeQuestion = (req, res) => {
         });
 };
 
+/**
+ * Assigns a category to a question.
+ *
+ * This function is responsible for updating a question in the database by adding a new category to its
+ * list of categories. If the question is not found, it returns a 404 error. If an error occurs during
+ * the update, it returns a 500 error.
+ *
+ * @param {Object} req - The HTTP request object, containing the questionId and category_id in the request body.
+ * @param {Object} res - The HTTP response object, used to send the response back to the client.
+ * @returns {Promise<Object>} - A Promise that resolves with a success message if the update is successful.
+ */
 const assignQuestionCategory = async(req, res) => {
     const { questionId } = req.params;
     const { category_id } = req.body;

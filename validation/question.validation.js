@@ -6,8 +6,8 @@ const questionValidator = {
         body('category_id')
         .notEmpty()
         .withMessage('Category id is required')
-        .isString()
-        .withMessage('Category id must be a string'),
+        .isMongoId()
+        .withMessage('Category id must be a mongongodb id'),
     ]
 }
 
