@@ -22,8 +22,8 @@ This project is a web-based dashboard for managing a question bank, accessible o
 
 ## Dependencies
 
-The project uses the following dependencies:
-
+The project uses the following dependencies
+- **node version**: 22.11.0
 - **bcryptjs**: For hashing passwords.
 - **body-parser**: To parse incoming request bodies.
 - **csv-parser**: To parse CSV files.
